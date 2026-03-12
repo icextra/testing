@@ -1,0 +1,10 @@
+$root = ([ADSI]"LDAP://RootDSE").configurationNamingContext
+
+$filter = "(&(objectClass=pKICertificateTemplate)(|(pkiextendedkeyusage=2.5.29.37.0)(!(pkiextendedkeyusage=*))))"
+
+$searcher = [adsisearcher]$filter
+$searcher.SearchRoot = "LDAP://CN=Certificate Templates,CN=Public Key Services,CN=Services,$root"
+
+$searcher.FindAll() | ForEach-Object {
+    $_.Properties.name
+}
