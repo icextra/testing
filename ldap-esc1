@@ -1,4 +1,14 @@
 $root = ([ADSI]"LDAP://RootDSE").configurationNamingContext
-$searcher = [adsisearcher]"(&(objectClass=pKICertificateTemplate)(mspki-certificate-name-flag:1.2.840.113556.1.4.803:=1))"
+
+$filter = "(&
+(objectClass=pKICertificateTemplate)
+(mspki-certificate-name-flag:1.2.840.113556.1.4.803:=1)
+(!(mspki-enrollment-flag:1.2.840.113556.1.4.803:=2))
+)"
+
+$searcher = [adsisearcher]$filter
 $searcher.SearchRoot = "LDAP://CN=Certificate Templates,CN=Public Key Services,CN=Services,$root"
-$searcher.FindAll() | ForEach-Object { $_.Properties.name }
+
+$searcher.FindAll() | ForEach-Object {
+    $_.Properties.name
+}
